@@ -1,0 +1,103 @@
+package middleware
+
+import (
+	"context"
+	"strings"
+	"testing"
+
+	"github.com/axisvela/praxo-core/v2/pkg/agent/types"
+	"github.com/axisvela/praxo-core/v2/pkg/model"
+)
+
+func TestPIIRedactorDefaultRules(t *testing.T) {
+	r := NewPIIRedactor(DefaultPIIRules()...)
+	got := r.Redact("mail a@b.com ssn 123-45-6789 card 4111 1111 1111 1111")
+	for _, want := range []string{"[REDACTED:email]", "[REDACTED:ssn]", "[REDACTED:credit_card]"} {
+		if !strings.Contains(got, want) {
+			t.Fatalf("redacted = %q, missing %s", got, want)
+		}
+	}
+	if strings.Contains(got, "a@b.com") || strings.Contains(got, "123-45-6789") {
+		t.Fatalf("secret leaked: %q", got)
+	}
+}
+
+func TestPIIMiddlewareRedactsModelRequest(t *testing.T) {
+	mw := PIIMiddleware(NewPIIRedactor(DefaultPIIRules()...))
+	req := &model.Request{Messages: []model.Message{{Role: model.RoleUser, Content: "email a@b.com"}}}
+	if err := mw.BeforeModel(context.Background(), &types.ModelCall{RunID: "r", Request: req}); err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(req.Messages[0].Content, "a@b.com") {
+		t.Fatalf("request leaked: %q", req.Messages[0].Content)
+	}
+}
+
+func TestPIIMiddlewareRedactsToolCallHistory(t *testing.T) {
+	mw := PIIMiddleware(NewPIIRedactor(DefaultPIIRules()...))
+	original := map[string]any{
+		"email":  "a@b.com",
+		"nested": map[string]any{"note": "ssn 123-45-6789"},
+	}
+	req := &model.Request{Messages: []model.Message{{
+		Role: model.RoleAssistant,
+		ToolCalls: []model.ToolCall{{
+			ID:        "call-1",
+			Name:      "lookup",
+			Arguments: original,
+		}},
+	}}}
+	if err := mw.BeforeModel(context.Background(), &types.ModelCall{RunID: "r", Request: req}); err != nil {
+		t.Fatal(err)
+	}
+	args := req.Messages[0].ToolCalls[0].Arguments
+	if strings.Contains(args["email"].(string), "a@b.com") {
+		t.Fatalf("tool-call history leaked: %+v", args)
+	}
+	nested := args["nested"].(map[string]any)
+	if strings.Contains(nested["note"].(string), "123-45-6789") {
+		t.Fatalf("nested tool-call history leaked: %+v", args)
+	}
+	if !strings.Contains(original["email"].(string), "a@b.com") {
+		t.Fatalf("middleware mutated caller arguments: %+v", original)
+	}
+}
+
+func TestPIIMiddlewareRedactsToolResult(t *testing.T) {
+	mw := PIIMiddleware(NewPIIRedactor(DefaultPIIRules()...))
+	result := &types.ToolResult{Value: map[string]any{
+		"email":  "a@b.com",
+		"nested": []any{"ssn 123-45-6789"},
+	}}
+	if err := mw.AfterTool(context.Background(), &types.ToolCall{}, result); err != nil {
+		t.Fatal(err)
+	}
+	m := result.Value.(map[string]any)
+	if strings.Contains(m["email"].(string), "a@b.com") {
+		t.Fatalf("tool result leaked: %+v", m)
+	}
+	nested := m["nested"].([]any)
+	if strings.Contains(nested[0].(string), "123-45-6789") {
+		t.Fatalf("nested tool result leaked: %+v", m)
+	}
+}
+
+func TestPIIMiddlewareRedactsTypedToolResult(t *testing.T) {
+	mw := PIIMiddleware(NewPIIRedactor(DefaultPIIRules()...))
+	result := &types.ToolResult{Value: map[string]any{
+		"attrs":  map[string]string{"email": "a@b.com"},
+		"values": []string{"ssn 123-45-6789"},
+	}}
+	if err := mw.AfterTool(context.Background(), &types.ToolCall{}, result); err != nil {
+		t.Fatal(err)
+	}
+	m := result.Value.(map[string]any)
+	attrs := m["attrs"].(map[string]string)
+	if strings.Contains(attrs["email"], "a@b.com") {
+		t.Fatalf("typed map tool result leaked: %+v", attrs)
+	}
+	values := m["values"].([]string)
+	if strings.Contains(values[0], "123-45-6789") {
+		t.Fatalf("typed slice tool result leaked: %+v", values)
+	}
+}

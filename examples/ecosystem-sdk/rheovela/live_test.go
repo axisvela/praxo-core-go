@@ -1,0 +1,258 @@
+package rheovela
+
+import (
+	"bytes"
+	"context"
+	"crypto/tls"
+	"crypto/x509"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+	"testing"
+	"time"
+
+	rheovela "github.com/axisvela/rheovela-open/sdk/go/v3/rheovela"
+	"github.com/axisvela/rheovela-open/sdk/go/v3/worker"
+)
+
+func newLiveClient(t *testing.T) (*rheovela.Client, string, *http.Client) {
+	t.Helper()
+	baseURL := os.Getenv("RHEO_URL")
+	if baseURL == "" {
+		t.Skip("RHEO_URL is not set")
+	}
+	var transport http.RoundTripper = http.DefaultTransport
+	if ca := os.Getenv("RHEO_CA"); ca != "" {
+		pem, err := os.ReadFile(ca)
+		if err != nil {
+			t.Fatal(err)
+		}
+		pool := x509.NewCertPool()
+		if !pool.AppendCertsFromPEM(pem) {
+			t.Fatalf("RHEO_CA contains no certificates")
+		}
+		transport = &http.Transport{TLSClientConfig: &tls.Config{
+			MinVersion: tls.VersionTLS12,
+			RootCAs:    pool,
+		}}
+	}
+	if header := os.Getenv("RHEO_AUTH_HEADER"); header != "" {
+		transport = headerTransport{
+			base:   transport,
+			header: header,
+			value:  os.Getenv("RHEO_AUTH_VALUE"),
+		}
+	}
+	httpClient := &http.Client{
+		Transport: transport,
+		Timeout:   30 * time.Second,
+	}
+	return rheovela.NewClient(baseURL, rheovela.WithHTTPClient(httpClient)), baseURL, httpClient
+}
+
+type headerTransport struct {
+	base   http.RoundTripper
+	header string
+	value  string
+}
+
+func (t headerTransport) RoundTrip(request *http.Request) (*http.Response, error) {
+	clone := request.Clone(request.Context())
+	clone.Header = request.Header.Clone()
+	clone.Header.Set(t.header, t.value)
+	return t.base.RoundTrip(clone)
+}
+
+func TestLiveDurableWorker(t *testing.T) {
+	client, baseURL, httpClient := newLiveClient(t)
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+	defer cancel()
+	if err := client.Health(ctx); err != nil {
+		t.Fatal(err)
+	}
+	workflowID := fmt.Sprintf("praxo-live-%d", time.Now().UnixNano())
+	if err := publishWorkflow(ctx, httpClient, baseURL, workflowID); err != nil {
+		t.Fatal(err)
+	}
+
+	run, err := client.OpenRun(ctx, rheovela.OpenRunRequest{
+		Workflow:       workflowID,
+		Actor:          "praxo-live",
+		IdempotencyKey: workflowID,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	item := awaitWorkItem(t, ctx, client, run.InstanceID, "ready")
+	success := stepRunner(func(context.Context, worker.WorkItem) (StepResult, error) {
+		return StepResult{
+			Result:        map[string]any{"ok": true},
+			CheckpointRef: "live-ckpt",
+			EffectCursor:  "live-eff",
+		}, nil
+	})
+	instance, err := NewDurableWorker(client, success)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := instance.RunOnce(ctx); err != nil {
+		t.Fatal(err)
+	}
+	done := awaitWorkItem(t, ctx, client, run.InstanceID, "done")
+	if !bytes.Contains(done.Result, []byte(`"ok":true`)) {
+		t.Fatalf("result = %s", done.Result)
+	}
+	if done.CheckpointRef != "live-ckpt" || done.EffectCursor != "live-eff" {
+		t.Fatalf("refs = %#v", done)
+	}
+	if item.ID != done.ID {
+		t.Fatalf("item = %s, done = %s", item.ID, done.ID)
+	}
+
+	approvalRun, err := client.OpenRun(ctx, rheovela.OpenRunRequest{
+		Workflow:       workflowID,
+		Actor:          "praxo-live",
+		IdempotencyKey: workflowID + "-approval",
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	awaitWorkItem(t, ctx, client, approvalRun.InstanceID, "ready")
+	approval := stepRunner(func(context.Context, worker.WorkItem) (StepResult, error) {
+		return StepResult{
+			CheckpointRef: "live-approval-ckpt",
+			Approval: &worker.ApprovalRequest{
+				Reason:    "live approval",
+				FinalArgs: json.RawMessage(`{"approved":true}`),
+			},
+		}, nil
+	})
+	instance, err = NewDurableWorker(client, approval)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := instance.RunOnce(ctx); err != nil {
+		t.Fatal(err)
+	}
+	pending := awaitWorkItem(t, ctx, client, approvalRun.InstanceID, "awaiting_approval")
+	if pending.Approval == nil || pending.Approval.Reason != "live approval" {
+		t.Fatalf("approval = %#v", pending.Approval)
+	}
+	if err := client.ApproveWorkItem(ctx, pending.ID, "reviewer", "ok", nil); err != nil {
+		t.Fatal(err)
+	}
+	awaitWorkItem(t, ctx, client, approvalRun.InstanceID, "ready")
+	instance, err = NewDurableWorker(client, success)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := instance.RunOnce(ctx); err != nil {
+		t.Fatal(err)
+	}
+	awaitWorkItem(t, ctx, client, approvalRun.InstanceID, "done")
+}
+
+func publishWorkflow(ctx context.Context, httpClient *http.Client, baseURL, workflowID string) error {
+	body, err := json.Marshal(map[string]any{
+		"schema_version": "1",
+		"workflow_id":    workflowID,
+		"title":          "PRAXO live worker",
+		"kind":           "business",
+		"source":         "praxo-live",
+		"stages":         []map[string]any{{"id": "work", "title": "Work"}},
+		"transitions":    []any{},
+	})
+	if err != nil {
+		return err
+	}
+	request, err := http.NewRequestWithContext(ctx, http.MethodPost, baseURL+"/api/v1/workflows", bytes.NewReader(body))
+	if err != nil {
+		return err
+	}
+	request.Header.Set("Content-Type", "application/json")
+	response, err := httpClient.Do(request)
+	if err != nil {
+		return err
+	}
+	defer response.Body.Close()
+	payload, _ := io.ReadAll(io.LimitReader(response.Body, 1<<20))
+	if response.StatusCode < 200 || response.StatusCode >= 300 {
+		return fmt.Errorf("publish workflow: %s: %s", response.Status, string(payload))
+	}
+	return nil
+}
+
+func awaitWorkItem(t *testing.T, ctx context.Context, client *rheovela.Client, instanceID, state string) rheovela.WorkItem {
+	t.Helper()
+	deadline := time.Now().Add(10 * time.Second)
+	for time.Now().Before(deadline) {
+		items, err := client.ListWorkItems(ctx, instanceID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, item := range items {
+			if item.State == state {
+				return item
+			}
+		}
+		time.Sleep(100 * time.Millisecond)
+	}
+	t.Fatalf("work item for %s did not reach %s", instanceID, state)
+	return rheovela.WorkItem{}
+}
+
+func TestLiveMultiWorkerLeaseFencing(t *testing.T) {
+	client, baseURL, httpClient := newLiveClient(t)
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+	defer cancel()
+	if err := client.Health(ctx); err != nil {
+		t.Fatal(err)
+	}
+	workflowID := fmt.Sprintf("praxo-lease-%d", time.Now().UnixNano())
+	if err := publishWorkflow(ctx, httpClient, baseURL, workflowID); err != nil {
+		t.Fatal(err)
+	}
+	run, err := client.OpenRun(ctx, rheovela.OpenRunRequest{
+		Workflow:       workflowID,
+		Actor:          "praxo-lease",
+		IdempotencyKey: workflowID,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	item := awaitWorkItem(t, ctx, client, run.InstanceID, "ready")
+	first, err := client.ClaimWorkItem(ctx, item.ID, "200ms")
+	if err != nil {
+		t.Fatal(err)
+	}
+	time.Sleep(500 * time.Millisecond)
+	second, err := client.ClaimWorkItem(ctx, item.ID, "30s")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if first.Token == second.Token {
+		t.Fatal("successor claim reused the stale fencing token")
+	}
+	staleErr := client.CompleteWorkItemWithResult(ctx, item.ID, first.Token, rheovela.WorkResult{
+		Result: json.RawMessage(`{"stale":true}`),
+	})
+	if staleErr == nil {
+		t.Fatal("stale worker completed after lease takeover")
+	}
+	if err := client.CompleteWorkItemWithResult(ctx, item.ID, second.Token, rheovela.WorkResult{
+		Result:        json.RawMessage(`{"ok":true}`),
+		CheckpointRef: "lease-ckpt",
+		EffectCursor:  "lease-eff",
+	}); err != nil {
+		t.Fatal(err)
+	}
+	done := awaitWorkItem(t, ctx, client, run.InstanceID, "done")
+	if !bytes.Contains(done.Result, []byte(`"ok":true`)) {
+		t.Fatalf("result = %s", done.Result)
+	}
+	if done.CheckpointRef != "lease-ckpt" || done.EffectCursor != "lease-eff" {
+		t.Fatalf("refs = %#v", done)
+	}
+}
