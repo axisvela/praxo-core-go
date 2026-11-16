@@ -87,8 +87,36 @@
   verification is pending. Other language MCP clients remain stdio or
   transport-seam only.
 
+### Changed
+
+- Memory recall is injected as untrusted historical user data instead of a
+  system message. The recall block labels each record's frame and source when
+  available, and assistant-written memory records now carry `source` and
+  `trust` metadata.
+- Roadmap review separates unreleased Go fixes from published-package behavior,
+  timing targets from measured results, and source coverage from example depth.
+  Two-run memory regressions cover assistant output, application-stored tool
+  results, and external writes using an in-memory store; they do not prove
+  disk recovery or general prompt-injection prevention.
+- README and quickstart separate the five-minute embed path from governed
+  acceptance, and the recoverable-execution wording now says checkpoint/session
+  contracts with message-history continuation rather than durable execution.
+- Adapter status documents three evidence layers: contract complete, adapter
+  available, and integration verified. `complete` remains contract-complete
+  only.
+- Delegation docs state that the subagent manager does not enforce
+  parent-to-child policy, tool-scope, budget, or depth narrowing; the runner
+  must derive and enforce the child scope.
+
 ### Fixed
 
+- Memory recall no longer elevates model-generated or external content to
+  system authority across turns. New tests cover malicious cross-turn memory
+  and confirm that tool policy still denies the call with zero effects.
+- `pkg/tool.RetryPolicy` documents and tests the unknown-effect hazard: with
+  `Attempts > 1` and no `ShouldRetry`, every error is retried, so a
+  non-idempotent tool can duplicate an effect after a transport or timeout
+  error.
 - PHP `0.4.1` is published from `php/v0.4.1` with a Composer `autoload.files`
   entry for `src/autoload.php`, so Composer consumers load the SDK classes. The
   release also carries the additive `Praxo\Core\Adapters\OpenAICompatible`
