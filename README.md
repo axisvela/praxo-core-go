@@ -8,10 +8,10 @@ Go is the reference implementation of PRAXO-CORE: an embeddable, MIT-licensed ag
 | --- | --- |
 | Package | `github.com/axisvela/praxo-core/v2` |
 | Registry | [Go module proxy / pkg.go.dev](https://pkg.go.dev/github.com/axisvela/praxo-core/v2) |
-| Install | `go get github.com/axisvela/praxo-core/v2@v2.8.0` |
-| Source version | `v2.8.0` |
-| Published version | `v2.8.0` |
-| Source tag | `v2.8.0` |
+| Install | `go get github.com/axisvela/praxo-core/v2@v2.9.0` |
+| Source version | `v2.9.0` |
+| Published version | `v2.9.0` |
+| Source tag | `v2.9.0` |
 | Tier | Core (reference) |
 | Contract | `SPEC_VERSION` `0.2.0` |
 | Documentation | https://axisvela.github.io/praxo-core/ |
@@ -29,7 +29,7 @@ Go is the reference implementation of PRAXO-CORE: an embeddable, MIT-licensed ag
 Install the published package:
 
 ```bash
-go get github.com/axisvela/praxo-core/v2@v2.8.0
+go get github.com/axisvela/praxo-core/v2@v2.9.0
 ```
 
 See the [full Go README](language/go/README.md) for complete installation, build, and verification commands.
@@ -57,7 +57,7 @@ Runnable examples live under [`examples`](examples) and [`language/go/examples`]
 | [sandbox](examples/sandbox) | A high-risk tool pattern: authorize before execution, allow only an exact command, and run without a shell. |
 | [session-checkpoint](examples/session-checkpoint) | This example shows a two-step multi-turn flow: |
 | [workspace-agent](examples/workspace-agent) | This standalone Go module uses the published PRAXO-CORE package to build a read-only workspace assistant. It registers `fs.list`, `fs.read`, `fs.glob`, and `fs.grep` from `pkg/v... |
-| [consumer-go](language/go/examples/consumer-go) | This module installs published Core `2.8.0`, without local replacements or optional adapters. It is the current-package starter, separate from the historical `2.5.0` compatibili... |
+| [consumer-go](language/go/examples/consumer-go) | This module installs published Core `2.9.0`, without local replacements or optional adapters. It is the current-package starter, separate from the historical `2.5.0` compatibili... |
 | [live-model](language/go/examples/live-model) | The Go project lives in [`go/`](go/). Other language projects live under `language/<lang>/examples/live-model`, so the dedicated language mirrors include them. Each example: |
 
 ## Verify
