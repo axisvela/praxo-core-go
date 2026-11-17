@@ -54,6 +54,7 @@ Runnable examples live under [`examples`](examples) and [`language/go/examples`]
 | [quickstart](examples/quickstart) |  |
 | [recipes](examples/recipes) |  |
 | [reference](examples/reference) | A small runnable example that combines the OpenAI-compatible adapter with: |
+| [representative-chain](examples/representative-chain) | This example runs one representative governed chain in Go: |
 | [sandbox](examples/sandbox) | A high-risk tool pattern: authorize before execution, allow only an exact command, and run without a shell. |
 | [session-checkpoint](examples/session-checkpoint) | This example shows a two-step multi-turn flow: |
 | [workspace-agent](examples/workspace-agent) | This standalone Go module uses the published PRAXO-CORE package to build a read-only workspace assistant. It registers `fs.list`, `fs.read`, `fs.glob`, and `fs.grep` from `pkg/v... |
