@@ -42,6 +42,12 @@
 
 ### Changed
 
+- PowerShell consumer examples can explicitly select installed module `0.7.1`
+  with `-UseInstalledModule`, without source fallback or a DLL override. Module
+  selection regressions cover source mode, missing packages, and DLL overrides.
+- Recorded local PHP `0.8.1` Composer installation, PowerShell `0.7.1`
+  `Save-PSResource` download, and Perl `0.6.1` `cpanm` installation with isolated
+  packaged-module consumer checks. These do not establish independent adoption.
 - Clarified that `memory.Store` is storage/retrieval and does not inject records
   by default; Go recall remains opt-in, and other Core SDKs do not auto-recall.
   Added a Go regression for the default no-recall boundary.
@@ -69,6 +75,9 @@
   MATLAB/Octave implementation, Delphi / Free Pascal, Objective-C, Swift, and
   PowerShell. They use in-memory or transport-seam MCP, OTel, and Harmovela
   seams.
+- Recorded a clean NuGet `Praxo.Core==0.9.1` install and published-package
+  consumer run using an explicit NuGet source; the earlier `NU1100` came from no
+  configured source, not package incompatibility.
 - Synced the Ruby release-source repository to `0.8.1` and added annotated tag
   `v0.8.1`; corrected the Ruby consumer guide to pin `praxo-core==0.8.1`.
 - Sample-language entries (JavaScript, Kotlin, Scala, Groovy, Clojure, Visual
