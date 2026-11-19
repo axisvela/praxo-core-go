@@ -8,10 +8,10 @@ Go is the reference implementation of PRAXO-CORE: an embeddable, MIT-licensed ag
 | --- | --- |
 | Package | `github.com/axisvela/praxo-core/v2` |
 | Registry | [Go module proxy / pkg.go.dev](https://pkg.go.dev/github.com/axisvela/praxo-core/v2) |
-| Install | `go get github.com/axisvela/praxo-core/v2@v2.9.0` |
-| Source version | `v2.9.0` |
+| Install | `go get github.com/axisvela/praxo-core/v2@v2.10.0` |
+| Source version | `v2.10.0` |
 | Published version | `v2.9.0` |
-| Source tag | `v2.9.0` |
+| Source tag | `v2.10.0` |
 | Tier | Core (reference) |
 | Contract | `SPEC_VERSION` `0.2.0` |
 | Documentation | https://axisvela.github.io/praxo-core/ |
@@ -29,7 +29,7 @@ Go is the reference implementation of PRAXO-CORE: an embeddable, MIT-licensed ag
 Install the published package:
 
 ```bash
-go get github.com/axisvela/praxo-core/v2@v2.9.0
+go get github.com/axisvela/praxo-core/v2@v2.10.0
 ```
 
 See the [full Go README](language/go/README.md) for complete installation, build, and verification commands.
