@@ -1,4 +1,22 @@
-﻿# Changelog
+# Changelog
+
+## [Unreleased]
+
+### Added
+
+- OpenAI-compatible, Anthropic, and Gemini SSE streaming across the declared
+  Core adapters, including Anthropic and Gemini stream reassembly in the
+  extended and optional SDKs.
+- Process plugin hosts with JSON-Lines stdio, token authentication, health
+  handshake, invocation timeout, cancellation, and typed call errors in Go,
+  Python, TypeScript, Rust, C#, Dart, Ruby, Elixir, Erlang, Haskell, V, and
+  OCaml. Swift carries a parse-only implementation; Java is compile-verified.
+- `spec/wire/plugin-process.json` freezes the process host request/response
+  frames, control methods, token environment variable, and call-error codes.
+
+### Changed
+
+- Anthropic and Gemini adapter parity rows now record SSE streaming support.
 
 ## [2.9.0] - 2026-11-16
 
@@ -50,8 +68,8 @@
 - Published Lua `0.7.2-1` and Dart `0.6.2` with the expanded example index.
 - Published source tags `php/v0.8.2` and `r/v0.10.2`. PHP split tag `v0.8.2`
   was pushed; Packagist and r-universe registry refreshes were still pending.
-- Prepared Swift `0.7.1` source and split-repository release for the expanded
-  example index.
+- Published Swift source tag `swift/v0.7.1` and split tag `0.7.1`; the
+  Swift Package Index refresh was still pending.
 - Added annotated sample snapshot tags for JavaScript (`javascript/v0.8.0`),
   Kotlin/Scala/Groovy/Clojure (`v0.10.0`), F# and Visual Basic (`v0.9.1`), and
   OpenCL (`opencl/v0.10.0`). These are samples over host Cores, not separate
