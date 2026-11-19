@@ -58,7 +58,7 @@ Runnable examples live under [`examples`](examples) and [`language/go/examples`]
 | [sandbox](examples/sandbox) | A high-risk tool pattern: authorize before execution, allow only an exact command, and run without a shell. |
 | [session-checkpoint](examples/session-checkpoint) | This example shows a two-step multi-turn flow: |
 | [workspace-agent](examples/workspace-agent) | This standalone Go module uses the published PRAXO-CORE package to build a read-only workspace assistant. It registers `fs.list`, `fs.read`, `fs.glob`, and `fs.grep` from `pkg/v... |
-| [consumer-go](language/go/examples/consumer-go) | This module installs published Core `2.9.0`, without local replacements or optional adapters. It is the current-package starter, separate from the historical `2.5.0` compatibili... |
+| [consumer-go](language/go/examples/consumer-go) | This module installs published Core `2.10.0`, without local replacements or optional adapters. It is the current-package starter, separate from the historical `2.5.0` compatibil... |
 | [live-model](language/go/examples/live-model) | The Go project lives in [`go/`](go/). Other language projects live under `language/<lang>/examples/live-model`, so the dedicated language mirrors include them. Each example: |
 
 ## Verify
