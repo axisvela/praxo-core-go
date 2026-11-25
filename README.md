@@ -12,6 +12,9 @@ Go is the reference implementation of PRAXO-CORE: an embeddable, MIT-licensed ag
 | Source version | `v2.10.0` |
 | Published version | `v2.10.0` |
 | Source tag | `v2.10.0` |
+| Tutorial tag | `go/tutorial/v0.1.0` |
+| Application tag | `go/application/v0.1.0` |
+| Examples tag | `go/examples/v0.1.0` |
 | Tier | Core (reference) |
 | Contract | `SPEC_VERSION` `0.2.0` |
 | Documentation | https://axisvela.github.io/praxo-core/ |
@@ -61,6 +64,32 @@ Runnable examples live under [`examples`](examples) and [`language/go/examples`]
 | [session-checkpoint](language/go/examples/session-checkpoint) | This example shows a two-step multi-turn flow: |
 | [workspace-agent](language/go/examples/workspace-agent) | This standalone Go module uses the published PRAXO-CORE package to build a read-only workspace assistant. It registers `fs.list`, `fs.read`, `fs.glob`, and `fs.grep` from `pkg/v... |
 
+## Scenario Tutorials
+
+Scenario-oriented tutorials live under `language/go/Tutorial`.
+
+| Path | What it shows |
+| --- | --- |
+| [Tutorial](language/go/Tutorial) | Bounded Go examples built on the native Core. Each tutorial is a small, runnable slice with explicit non-goals and an application-owned boundary; none is a complete industry pro... |
+| [customs-reroute](language/go/Tutorial/customs-reroute) | A scoped customs tutorial over the Go reference Core. It validates fixed document fields for one shipment, compares two routes and drafts a review-only reroute. The source and m... |
+| [emergency-route-plan](language/go/Tutorial/emergency-route-plan) | A scoped emergency-planning tutorial over the Go reference Core. It reads fixed road closures for one event through an application-owned `RoadSource`, drafts a review-only relie... |
+| [evidence-vault](language/go/Tutorial/evidence-vault) | A scoped security-operations tutorial over the Go reference Core. It reads one allowlisted evidence file from a local `vfs/localfs` backend confined to a vault root, then drafts... |
+| [fullstack-workspace](language/go/Tutorial/fullstack-workspace) | A scoped full-stack-planning tutorial over the Go reference Core. It reads a fixed allowlisted workspace, applies one bounded edit to `app.go` and inspects synthetic diagnostics... |
+| [incident-coordination](language/go/Tutorial/incident-coordination) | A scoped operations tutorial over the Go reference Core. It reads one fixed `incident-100` snapshot through an application-owned `IncidentSource` interface, drafts an operator u... |
+| [litigation-timeline](language/go/Tutorial/litigation-timeline) | A scoped litigation-support tutorial over the Go reference Core. It builds a cited timeline from fixed synthetic documents, flags one contradiction and drafts a review-only evid... |
+| [logistics-checkpoint](language/go/Tutorial/logistics-checkpoint) | A scoped logistics tutorial over the Go reference Core that shows a two-run workflow across a checkpoint. The first run assesses a fixed `shipment-100` and saves a `checkpoint.C... |
+| [pentest-lab-review](language/go/Tutorial/pentest-lab-review) | A scoped penetration-testing tutorial over the Go reference Core. It inventories one fixed allowlisted loopback lab host through an application-owned `LabSource`, reports two se... |
+| [soc-alert-triage](language/go/Tutorial/soc-alert-triage) | A scoped security-operations tutorial over the Go reference Core. It reads one fixed `alert-100` snapshot through an application-owned `AlertSource`, redacts personal data with... |
+| [zero-trust-review](language/go/Tutorial/zero-trust-review) | A bounded first slice of [CY-05](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), not a live policy engine. It reads fixed access events for one tenant,... |
+
+## Reference Applications
+
+Complete AI-native reference applications live under `language/go/application`.
+
+| Path | What it shows |
+| --- | --- |
+| [application](language/go/application) | A Go HTTP service and CLI where the agent drives the primary incident workflow: an operator submits an incident intent, the agent searches application-owned telemetry, diagnoses... |
+
 ## Verify
 
 Run the module checks from the mirror root:
@@ -90,7 +119,8 @@ This mirror contains the language source and the shared `spec/` vectors, so the 
 
 - `pkg/`, `adapters/`, `cmd/`, `internal/` — Go module source
 - `language/go/examples/` — runnable Go and cross-language examples
-- `language/go/examples/` — published-package consumer and live-model examples
+- `language/go/Tutorial/` — scenario-oriented tutorials
+- `language/go/application/` — AI-native reference application
 - `spec/` — shared contract, vectors, and parity inventories
 - `LICENSE` — MIT license
 
