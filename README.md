@@ -12,9 +12,6 @@ Go is the reference implementation of PRAXO-CORE: an embeddable, MIT-licensed ag
 | Source version | `v2.10.0` |
 | Published version | `v2.10.0` |
 | Source tag | `v2.10.0` |
-| Tutorial tag | `go/tutorial/v0.1.0` |
-| Application tag | `go/application/v0.1.0` |
-| Examples tag | `go/examples/v0.1.0` |
 | Tier | Core (reference) |
 | Contract | `SPEC_VERSION` `0.2.0` |
 | Documentation | https://axisvela.github.io/praxo-core/ |
