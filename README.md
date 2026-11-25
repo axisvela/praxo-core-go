@@ -40,26 +40,26 @@ Runnable examples live under [`examples`](examples) and [`language/go/examples`]
 
 | Example | What it shows |
 | --- | --- |
-| [checkpoint](examples/checkpoint) | This example shows the product-owned checkpoint boundary: |
-| [echo](examples/echo) |  |
-| [ecosystem](examples/ecosystem) | These adapters show how AxisVela components plug into PRAXO-CORE's interfaces. Each adapter accepts a callback, so product code can supply its own client without adding product... |
-| [ecosystem-sdk](examples/ecosystem-sdk) | This is a separate example module that uses real AxisVela SDKs instead of the callback skeletons in [`../ecosystem`](../ecosystem). |
-| [embedded-service](examples/embedded-service) | This example embeds PRAXO-CORE in a vendor-neutral HTTP service using the published `github.com/axisvela/praxo-core/v2` module. |
-| [embedded-service-auth](examples/embedded-service-auth) | This example extends the embedded HTTP service with an application-verified bearer token and tenant-scoped policy. |
-| [governed-workspace](examples/governed-workspace) | A deterministic, no-API-key demo of the governance path: read-only by default, writes require explicit human approval, denial prevents execution, and a path escape is rejected b... |
-| [hitl](examples/hitl) | This example demonstrates a write tool that requires human approval: |
-| [integrator](examples/integrator) |  |
-| [multiagent](examples/multiagent) | This example uses `pkg/agent/delegation` to run two subagents asynchronously and aggregate their results. |
-| [plugin](examples/plugin) | This example shows a minimal runtime plugin process and a host that invokes it through `pkg/plugin/host/process`. |
-| [quickstart](examples/quickstart) |  |
-| [recipes](examples/recipes) |  |
-| [reference](examples/reference) | A small runnable example that combines the OpenAI-compatible adapter with: |
-| [representative-chain](examples/representative-chain) | This example runs one representative governed chain in Go: |
-| [sandbox](examples/sandbox) | A high-risk tool pattern: authorize before execution, allow only an exact command, and run without a shell. |
-| [session-checkpoint](examples/session-checkpoint) | This example shows a two-step multi-turn flow: |
-| [workspace-agent](examples/workspace-agent) | This standalone Go module uses the published PRAXO-CORE package to build a read-only workspace assistant. It registers `fs.list`, `fs.read`, `fs.glob`, and `fs.grep` from `pkg/v... |
+| [checkpoint](language/go/examples/checkpoint) | This example shows the product-owned checkpoint boundary: |
 | [consumer-go](language/go/examples/consumer-go) | This module installs published Core `2.10.0`, without local replacements or optional adapters. It is the current-package starter, separate from the historical `2.5.0` compatibil... |
+| [echo](language/go/examples/echo) |  |
+| [ecosystem](language/go/examples/ecosystem) | These adapters show how AxisVela components plug into PRAXO-CORE's interfaces. Each adapter accepts a callback, so product code can supply its own client without adding product... |
+| [ecosystem-sdk](language/go/examples/ecosystem-sdk) | This is a separate example module that uses real AxisVela SDKs instead of the callback skeletons in [`../ecosystem`](../ecosystem). |
+| [embedded-service](language/go/examples/embedded-service) | This example embeds PRAXO-CORE in a vendor-neutral HTTP service using the published `github.com/axisvela/praxo-core/v2` module. |
+| [embedded-service-auth](language/go/examples/embedded-service-auth) | This example extends the embedded HTTP service with an application-verified bearer token and tenant-scoped policy. |
+| [governed-workspace](language/go/examples/governed-workspace) | A deterministic, no-API-key demo of the governance path: read-only by default, writes require explicit human approval, denial prevents execution, and a path escape is rejected b... |
+| [hitl](language/go/examples/hitl) | This example demonstrates a write tool that requires human approval: |
+| [integrator](language/go/examples/integrator) |  |
 | [live-model](language/go/examples/live-model) | The Go project lives in [`go/`](go/). Other language projects live under `language/<lang>/examples/live-model`, so the dedicated language mirrors include them. Each example: |
+| [multiagent](language/go/examples/multiagent) | This example uses `pkg/agent/delegation` to run two subagents asynchronously and aggregate their results. |
+| [plugin](language/go/examples/plugin) | This example shows a minimal runtime plugin process and a host that invokes it through `pkg/plugin/host/process`. |
+| [quickstart](language/go/examples/quickstart) |  |
+| [recipes](language/go/examples/recipes) |  |
+| [reference](language/go/examples/reference) | A small runnable example that combines the OpenAI-compatible adapter with: |
+| [representative-chain](language/go/examples/representative-chain) | This example runs one representative governed chain in Go: |
+| [sandbox](language/go/examples/sandbox) | A high-risk tool pattern: authorize before execution, allow only an exact command, and run without a shell. |
+| [session-checkpoint](language/go/examples/session-checkpoint) | This example shows a two-step multi-turn flow: |
+| [workspace-agent](language/go/examples/workspace-agent) | This standalone Go module uses the published PRAXO-CORE package to build a read-only workspace assistant. It registers `fs.list`, `fs.read`, `fs.glob`, and `fs.grep` from `pkg/v... |
 
 ## Verify
 
@@ -77,11 +77,19 @@ This mirror contains the language source and the shared `spec/` vectors, so the 
 
 - X: <https://x.com/axisvela>
 - Weibo: <https://weibo.com/u/1936025761>
+- LinkedIn: <https://www.linkedin.com/company/axisvela/>
+- Facebook: <https://www.facebook.com/profile.php?id=61596905732406>
+- YouTube: <https://www.youtube.com/@axisvela>
+- Discord: <https://discord.com/channels/1575163993767809064/1575164343148875977>
+- GitHub Discussions: <https://github.com/axisvela/praxo-core/discussions>
+- GitHub Issues: <https://github.com/axisvela/praxo-core/issues>
+- Documentation: <https://axisvela.github.io/praxo-core/>
+- Architect: <https://axisvela.architect.pub>
 
 ## Repository layout
 
 - `pkg/`, `adapters/`, `cmd/`, `internal/` — Go module source
-- `examples/` — runnable Go and cross-language examples
+- `language/go/examples/` — runnable Go and cross-language examples
 - `language/go/examples/` — published-package consumer and live-model examples
 - `spec/` — shared contract, vectors, and parity inventories
 - `LICENSE` — MIT license
