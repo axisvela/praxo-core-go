@@ -34,6 +34,18 @@ go get github.com/axisvela/praxo-core/v2@v2.11.0
 
 See the [full Go README](language/go/README.md) for complete installation, build, and verification commands.
 
+## What's included
+
+| Capability | Status | Detail |
+| --- | --- | --- |
+| Agent loop | native | Policy hooks, final-argument authorization, HITL, and typed events |
+| Tools | native | Registry, gateway, JSON Schema, retries, and bounded parallel calls |
+| Context | native | Memory, context budgets, middleware, checkpoints, and streaming |
+| Providers | native | OpenAI-compatible, Anthropic, and Gemini adapters with SSE |
+| Integrations | seams | MCP, OpenTelemetry, workspace/VFS, and process/WASM plugin hosts |
+| Retrieval and delegation | native | Retriever seam and local subagent delegation |
+| Conformance | native | Shared spec vectors and checked-in API snapshots |
+
 ## Examples
 
 Runnable examples live under [`examples`](examples) and [`language/go/examples`](language/go/examples).
