@@ -41,7 +41,7 @@ Runnable examples live under [`examples`](examples) and [`language/go/examples`]
 | Example | What it shows |
 | --- | --- |
 | [checkpoint](language/go/examples/checkpoint) | This example shows the product-owned checkpoint boundary: |
-| [consumer-go](language/go/examples/consumer-go) | This module installs published Core `2.10.0`, without local replacements or optional adapters. It is the current-package starter, separate from the historical `2.5.0` compatibil... |
+| [consumer-go](language/go/examples/consumer-go) | This module installs published Core `2.11.0`, without local replacements or optional adapters. It is the current-package starter, separate from the historical `2.5.0` compatibil... |
 | [echo](language/go/examples/echo) |  |
 | [ecosystem](language/go/examples/ecosystem) | These adapters show how AxisVela components plug into PRAXO-CORE's interfaces. Each adapter accepts a callback, so product code can supply its own client without adding product... |
 | [ecosystem-sdk](language/go/examples/ecosystem-sdk) | This is a separate example module that uses real AxisVela SDKs instead of the callback skeletons in [`../ecosystem`](../ecosystem). |
