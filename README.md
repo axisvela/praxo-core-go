@@ -8,11 +8,11 @@ Go is the reference implementation of PRAXO-CORE: an embeddable, MIT-licensed ag
 | --- | --- |
 | Package | `github.com/axisvela/praxo-core/v2` |
 | Registry | [Go module proxy / pkg.go.dev](https://pkg.go.dev/github.com/axisvela/praxo-core/v2) |
-| Install | `go get github.com/axisvela/praxo-core/v2@v2.11.2` |
-| Source version | `v2.11.2` |
-| Published version | `v2.11.2` |
+| Install | `go get github.com/axisvela/praxo-core/v2@v2.11.3` |
+| Source version | `v2.11.3` |
+| Published version | `v2.11.3` |
 | Publication status | published |
-| Canonical source tag | [`v2.11.2`](https://github.com/axisvela/praxo-core/tree/v2.11.2) |
+| Canonical source tag | [`v2.11.3`](https://github.com/axisvela/praxo-core/tree/v2.11.3) |
 | Tier | Core (reference) |
 | Contract | `SPEC_VERSION` `0.2.0` |
 | Documentation | https://axisvela.github.io/praxo-core/ |
@@ -30,7 +30,7 @@ Go is the reference implementation of PRAXO-CORE: an embeddable, MIT-licensed ag
 Install the published package:
 
 ```bash
-go get github.com/axisvela/praxo-core/v2@v2.11.2
+go get github.com/axisvela/praxo-core/v2@v2.11.3
 ```
 
 See the [full Go README](language/go/README.md) for complete installation, build, and verification commands.
@@ -54,7 +54,7 @@ Runnable examples live under [`language/go/examples`](language/go/examples).
 | Example | What it shows |
 | --- | --- |
 | [checkpoint](language/go/examples/checkpoint) | This example shows the product-owned checkpoint boundary: |
-| [consumer-go](language/go/examples/consumer-go) | This module installs published Core `2.11.2`, without local replacements or optional adapters. It is the current-package starter, separate from the historical `2.5.0` compatibil... |
+| [consumer-go](language/go/examples/consumer-go) | This module installs published Core `2.11.3`, without local replacements or optional adapters. It is the current-package starter, separate from the historical `2.5.0` compatibil... |
 | [echo](language/go/examples/echo) |  |
 | [ecosystem](language/go/examples/ecosystem) | These adapters show how AxisVela components plug into PRAXO-CORE's interfaces. Each adapter accepts a callback, so product code can supply its own client without adding product dependencies to the framework. These skeletons intentionally do not import ecosystem SDKs. For a real Core-backed adapter, see [`../ecosystem-sdk`](https://github.com/axisvela/praxo-core/blob/main/language/go/examples/ecosystem-sdk) (NOETIVELA). |
 | [ecosystem-sdk](language/go/examples/ecosystem-sdk) | This is a separate example module that uses real AxisVela SDKs instead of the callback skeletons in [`../ecosystem`](https://github.com/axisvela/praxo-core/blob/main/language/go/examples/ecosystem). |
